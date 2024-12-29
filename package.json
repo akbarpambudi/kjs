@@ -1,5 +1,5 @@
 {
-  "name": "kjs",
+  "name": "kjs-workspace",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
-    "packages/runtime"
+    "packages/runtime",
+    "examples/hello-world"
   ],
   "keywords": [],
   "author": "",
