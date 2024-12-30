@@ -1,6 +1,6 @@
 import { beforeEach, expect, test,vi } from 'vitest'
 import { destroyDom } from '../destroy-dom'
-import {h,hText } from '../h'
+import {h,hText,hFragment } from '../h'
 import { mountDom } from '../mount-dom'
 
 beforeEach(() => {
@@ -46,6 +46,54 @@ test('remove an html element event listeners', async () => {
 
     expect(handler).toHaveBeenCalledTimes(1)
 })
+
+test('destroy an html element and its children recursively', async () => {
+    const vdom = h('div', {}, [
+        h('p', {}, [hText('hello')]),
+        h('span', {}, [hText('world')]),
+    ])
+
+    await mountDom(vdom, document.body)
+    expect(document.body.innerHTML).toBe(
+        '<div><p>hello</p><span>world</span></div>'
+    )
+    expect(vdom.el).toBeInstanceOf(HTMLDivElement)
+
+    await destroyDom(vdom)
+    expect(document.body.innerHTML).toBe('')
+    expect(allElementsHaveBeenDestroyed(vdom)).toBe(true)
+})
+
+test('destroy a fragment', async () => {
+    const vdom = hFragment([
+        h('div', {}, [hText('hello')]),
+        h('span', {}, [hText('world')]),
+    ])
+
+    await mountDom(vdom, document.body)
+    expect(document.body.innerHTML).toBe('<div>hello</div><span>world</span>')
+
+    await destroyDom(vdom)
+    expect(document.body.innerHTML).toBe('')
+    expect(allElementsHaveBeenDestroyed(vdom)).toBe(true)
+})
+
+test('destroy a fragment recursively', async () => {
+    const vdom = hFragment([
+        h('span', {}, ['hello']),
+        hFragment([h('span', {}, [hText('world')])]),
+    ])
+
+    await mountDom(vdom, document.body)
+    expect(document.body.innerHTML).toBe(
+        '<span>hello</span><span>world</span>'
+    )
+
+    await destroyDom(vdom)
+    expect(document.body.innerHTML).toBe('')
+    expect(allElementsHaveBeenDestroyed(vdom)).toBe(true)
+})
+
 
 
 function allElementsHaveBeenDestroyed(vdom) {

@@ -41,6 +41,8 @@ function removeFragmentNode(vDom) {
     const {children} = vDom
 
     children.forEach(child => destroyDom(child))
+
+    delete vDom.el
 }
 
 
