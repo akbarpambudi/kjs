@@ -1,3 +1,4 @@
+
 function withoutNulls(arr) {
   return arr.filter(item => item !== null && item !== undefined)
 }
@@ -126,7 +127,7 @@ function removeEventListeners(eventListeners,el){
     });
 }
 function setAttributes(el,attrs) {
-    const {style,class:className,...rest} = attrs;
+    const {style,'class':className,...rest} = attrs;
     if(className) {
         setClass(el,className);
     }

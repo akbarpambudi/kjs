@@ -7,11 +7,6 @@ const createNodeSelector = {
     [DOM_TYPES.FRAGMENT]: createFragmentNode,
 }
 
-const removeNodeSelector = {
-    [DOM_TYPES.TEXT]: removeTextNode,
-    [DOM_TYPES.ELEMENT]:removeElementNode,
-    [DOM_TYPES.FRAGMENT]: removeFragmentNode,
-}
 
 export function mountDom(virtualDom,parentElement) {
     if (!parentElement) {
@@ -29,18 +24,8 @@ export function mountDom(virtualDom,parentElement) {
     }
 
     createNode(
-        virtualDom.type,
+        virtualDom,
         parentElement)
-}
-
-
-export function destroyDom(virtualDom) {
-    const removeNode = removeNodeSelector[virtualDom.type]
-    if (!removeNode) {
-        throw new Error('Cannot remove node for type: ' + virtualDom.type + '')
-    }
-
-    removeNode(virtualDom)
 }
 
 function createTextNode(vDom,parentEl) {
@@ -49,11 +34,6 @@ function createTextNode(vDom,parentEl) {
     vDom.el = textNode
     parentEl.append(
         textNode)
-}
-
-function removeTextNode(vDom) {
-    const {el} = vDom
-    el.remove()
 }
 
 function createElementNode(vDom,parentEl) {
@@ -69,33 +49,14 @@ function createElementNode(vDom,parentEl) {
     parentEl.append(el)
 }
 
-function removeElementNode(vDom) {
-    const {el,children,listeners} = vDom
-    el.remove()
-
-    children.forEach(child => destroyDom(child))
-
-    if (listeners) {
-        removeEventListeners(listeners,el)
-        delete vDom.listeners
-    }
-}
-
 function createFragmentNode(vDom,parentEl) {
     const {children} = vDom
     vDom.el = parentEl
 
     children.forEach(child => {
-        mountDom(child.type,child,vDom.el)
+        mountDom(child,vDom.el)
     })
 }
-
-function removeFragmentNode(vDom) {
-    const {children} = vDom
-
-    children.forEach(child => destroyDom(child))
-}
-
 
 function addProps(el,props,vDom) {
     const {on:events, ...rest} = props
@@ -108,6 +69,10 @@ function addProps(el,props,vDom) {
 function addEventListeners(eventListeners,el){
     const addedEventListeners = {}
 
+    if(!eventListeners) {
+        return addedEventListeners
+    }
+
     Object.entries(eventListeners).forEach(([eventName,handler]) => {
         el.addEventListener(eventName,handler)
         addedEventListeners[eventName] = handler
@@ -116,14 +81,9 @@ function addEventListeners(eventListeners,el){
     return addedEventListeners
 }
 
-function removeEventListeners(eventListeners,el){
-    Object.entries(eventListeners).forEach(([eventName,handler]) => {
-        el.removeEventListener(eventName,handler)
-    })
-}
 
 function setAttributes(el,attrs) {
-    const {style,class:className,...rest} = attrs
+    const {style,'class':className,...rest} = attrs
 
     if(className) {
         setClass(el,className)
@@ -156,9 +116,6 @@ function setStyle(el,key,value) {
     el.style[key] = value
 }
 
-function removeStyle(el,key) {
-    el.style[key] = ''
-}
 
 function setAttribute(el,key,value) {
     if(value === null || value === undefined) {
