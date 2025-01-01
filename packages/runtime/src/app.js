@@ -1,11 +1,13 @@
 import {mountDom} from './mount-dom'
 import {destroyDom} from './destroy-dom'
 import {Dispatcher} from "./dispatcher";
+import {patchDOM} from "./patch-dom";
 
 export function createApp({view,initialState,reducers = {}}){
     let _parentElement = null
     let _virtualDom = null
     let _state = initialState
+    let _isMounted = false
 
     const dispatcher = new Dispatcher()
     const subscriptions = [dispatcher.afterEveryCommand(render)]
@@ -29,17 +31,22 @@ export function createApp({view,initialState,reducers = {}}){
 
 
     function render(){
-        if(_virtualDom){
-            destroyDom(_virtualDom)
-        }
-        _virtualDom = view(_state,emit)
-        mountDom(_virtualDom,_parentElement)
+        const newVirtualDom = view(_state,emit)
+       patchDOM(_virtualDom,newVirtualDom,_parentElement)
     }
 
     return {
         mount(parentElement){
+            if(_isMounted){
+                return
+            }
+
             _parentElement = parentElement
-            render()
+            _virtualDom = view(_state,emit)
+
+            mountDom(_virtualDom,_parentElement)
+
+            _isMounted = true
         },
         unmount(){
             if(_virtualDom){
