@@ -1,4 +1,5 @@
 import {DOM_TYPES} from "./h";
+import {addEventListeners, setAttributes} from "./dom-manipulator";
 
 
 const createNodeSelector = {
@@ -59,77 +60,11 @@ function createFragmentNode(vDom,parentEl,index) {
 }
 
 function addProps(el,props,vDom) {
-    const {on:events, ...rest} = props
+    const {on:events, ...rest} = props ?? {}
 
     vDom.listeners = addEventListeners(events,el)
 
     setAttributes(el,rest)
-}
-
-function addEventListeners(eventListeners,el){
-    const addedEventListeners = {}
-
-    if(!eventListeners) {
-        return addedEventListeners
-    }
-
-    Object.entries(eventListeners).forEach(([eventName,handler]) => {
-        el.addEventListener(eventName,handler)
-        addedEventListeners[eventName] = handler
-    })
-
-    return addedEventListeners
-}
-
-
-function setAttributes(el,attrs) {
-    const {style,'class':className,...rest} = attrs
-
-    if(className) {
-        setClass(el,className)
-    }
-
-    if(style){
-        Object.entries(style).forEach(([key,value]) => {
-            setStyle(el,key,value)
-        })
-    }
-
-    for(const [key,value] of Object.entries(rest)) {
-        setAttribute(el,key,value)
-    }
-}
-
-function setClass(el,className) {
-    el.className = ''
-
-    if (typeof className === 'string') {
-        el.className = className
-    }
-
-    if (Array.isArray(className)) {
-        el.classList.add(...className)
-    }
-}
-
-function setStyle(el,key,value) {
-    el.style[key] = value
-}
-
-
-function setAttribute(el,key,value) {
-    if(value === null || value === undefined) {
-        removeAttribute(el,key)
-    } else if (key.startsWith('data-')){
-        el.setAttribute(key,value)
-    } else {
-        el[key] = value
-    }
-}
-
-function removeAttribute(el,key) {
-    el[key] = null
-    el.removeAttribute(key)
 }
 
 function insert(el,parentEl,index) {

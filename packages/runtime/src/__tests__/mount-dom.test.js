@@ -138,3 +138,13 @@ test('mounts an element with styles', () => {
     expect(document.body.innerHTML).toBe('<div style="color: red;"></div>')
     expect(el.style.color).toBe('red')
 })
+
+test('insert a sibling element before another element', () => {
+    const vdomOne = h('div', { id: 'one' })
+    const vdomTwo = h('div', { id: 'two' })
+
+    mountDom(vdomTwo, document.body)
+    mountDom(vdomOne, document.body, 0)
+
+    expect(document.body.innerHTML).toBe('<div id="one"></div><div id="two"></div>')
+})

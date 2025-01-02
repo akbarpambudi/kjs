@@ -1,7 +1,11 @@
 export function objectsDiff(obj1, obj2) {
+
     const added = []
     const removed = []
     const updated = []
+
+    obj1 = obj1 || {}
+    obj2 = obj2 || {}
 
     const obj1Keys = Object.keys(obj1)
     const obj2Keys = Object.keys(obj2)

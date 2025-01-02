@@ -1,7 +1,7 @@
 import {mountDom} from './mount-dom'
 import {destroyDom} from './destroy-dom'
 import {Dispatcher} from "./dispatcher";
-import {patchDOM} from "./patch-dom";
+import {patchDom} from "./patch-dom";
 
 export function createApp({view,initialState,reducers = {}}){
     let _parentElement = null
@@ -32,7 +32,9 @@ export function createApp({view,initialState,reducers = {}}){
 
     function render(){
         const newVirtualDom = view(_state,emit)
-       patchDOM(_virtualDom,newVirtualDom,_parentElement)
+        console.log("re-rendering...")
+        patchDom(_virtualDom,newVirtualDom,_parentElement)
+        _virtualDom = newVirtualDom
     }
 
     return {
