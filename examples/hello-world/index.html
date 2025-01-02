@@ -62,7 +62,6 @@
        },
        reducers: {
            addTodo: (state) => {
-               console.log("addTodo - payload: ", state.draftTodo)
                const todos = state.todos.concat([state.draftTodo])
                return {
                    draftTodo: '',
@@ -70,14 +69,12 @@
                }
            },
            setDraftTodo: (state,payload) =>  {
-               console.log("setDraftTodo - payload: ", payload)
                return {
                    ...state,
                    draftTodo: payload,
                }
            },
            removeTodo: (state,payload) => {
-               console.log("removeTodo - payload: ", payload)
                const todos = state.todos.filter((todo,index) => index !== payload)
                return {
                    ...state,
@@ -85,7 +82,6 @@
                }
            },
            raisePriority: (state,payload) => {
-               console.log("raisePriority - payload: ", payload)
                const todos = state.todos
                const todo = todos[payload]
                todos.splice(payload,1)

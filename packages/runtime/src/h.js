@@ -31,8 +31,6 @@ export function hFragment(children) {
 
 function mapTextNodes(children) {
     return children.map(child => {
-        console.log("child: ", child)
-        console.log("typeof child: ", typeof child)
         if (typeof child === 'string') {
             return hText(child)
         }

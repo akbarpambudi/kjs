@@ -15,7 +15,6 @@ import {ARRAY_DIFF_OP, generateTransformationsSequence} from "./utils/array-tran
 
 
 export function patchDom(originalVirtualDom,patchVirtualDom,parentElement) {
-    console.log("patchDom ...")
     if(!isNodeEquals(originalVirtualDom,patchVirtualDom)){
         console.log("patchDom ... no is not equals")
         const index = findIndexInParentElement(originalVirtualDom.el,parentElement)
@@ -81,9 +80,6 @@ function patchElement(originVdom,patchVdom){
         ...patchAttributes
     } = patchVdom.props ?? {};
     const { listeners: originalListeners } = originVdom
-    console.log("patchElement ...")
-    console.log("originStyle: ", originStyle)
-    console.log("patchStyle: ", patchStyle)
 
     patchAttrs(el,originAttributes,patchAttributes)
     patchClasses(el,originClass,patchClass)
@@ -92,21 +88,13 @@ function patchElement(originVdom,patchVdom){
 }
 
 function patchAttrs(el,originAttributes,patchAttributes){
-    console.log("patchAttrs ...")
-    console.log("originAttributes: ", originAttributes)
-    console.log("patchAttributes: ", patchAttributes)
     const {added,removed,updated} = objectsDiff(originAttributes,patchAttributes)
-    console.log("added: ", added)
-    console.log("removed: ", removed)
-    console.log("updated: ", updated)
 
     for(let key of removed){
         removeAttribute(el,key)
     }
 
     for(let key of [...added,...updated]){
-        console.log("key: ", key)
-        console.log("patchAttributes[key]: ", patchAttributes[key])
         setAttribute(el,key,patchAttributes[key])
     }
 }
@@ -128,12 +116,6 @@ function patchClasses(el,originClass,patchClass){
 
 function patchEventListeners(el,originalEventListener = {}, originEvents = {},patchEvents = {}){
     const {added,removed,updated} = objectsDiff(originEvents,patchEvents)
-    console.log("patchEventListeners ...")
-    console.log("added: ", added)
-    console.log("removed: ", removed)
-    console.log("updated: ", updated)
-    console.log("originEvents: ", originEvents)
-    console.log("patchEvents: ", patchEvents)
 
     let addEventListeners = {}
     for(let eventName of [...removed,...updated]){
