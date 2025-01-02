@@ -1,8 +1,8 @@
 function withoutNulls(arr) {
-  if(!Array.isArray(arr)){
-    return []
-  }
-  return arr.filter(item => item !== null && item !== undefined)
+    if(!Array.isArray(arr)){
+        return []
+    }
+    return arr.filter(item => item !== null && item !== undefined)
 }
 
 const DOM_TYPES = {
@@ -341,7 +341,7 @@ function generateTransformationsSequence(originalArr,newArr,equalityFn = (a,b) =
             transformationSequence.push(wrappedOriginalArr.noopItem(index));
         } else if (wrappedOriginalArr.isAdditionOperation(newArr,index)) {
             const item = newArr[index];
-           transformationSequence.push(wrappedOriginalArr.addItem(item,index));
+            transformationSequence.push(wrappedOriginalArr.addItem(item,index));
         } else {
             const item = newArr[index];
             transformationSequence.push(wrappedOriginalArr.moveItem(item,index));

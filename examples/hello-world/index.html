@@ -2,16 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test</title>
 </head>
 <body>
 <div id="app"></div>
 
-<script type="module" src="k.js">
-    import {mountDom} from './k';
+<script type="module">
+   console.log("ok");
+   import {createApp,h,hText} from './k.js';
 
-    const app = document.getElementById('app');
-    mountDom(app);
+   const appMountDom = document.getElementById('app');
+   function TodoApp(state,emit){
+       return h('div', {}, [
+           h('input',{
+               type: 'text',
+               on: {
+                   'change': (e)=> {
+                       emit('setDraftTodo',e.target.value);
+                   }
+               }
+           },),
+           h('button', {
+               id: 'add-todo',
+               on: {
+                   'click': () => emit('addTodo')
+               }
+           }, [hText('add')]),
+           h('div',null,[
+               h('ul',null,state.todos.map(
+                   (todo,index) => h("li",null, [
+                       h('div',null,[
+                           hText(todo),
+                           h('button', {
+                               id: `up-${index}`,
+                               on: {
+                                   'click': () => emit('raisePriority',index)
+                               }
+                           },[hText('up')]),
+                           h('button', {
+                               id: `remove-${index}`,
+                               on: {
+                                   'click': () => emit('removeTodo',index)
+                               }
+                           },[hText('remove')])
+                       ])
+                   ])
+               ))
+           ])
+       ])
+   }
+
+   const app = createApp({
+       view: TodoApp,
+       initialState: {
+           draftTodo: '',
+           todos: []
+       },
+       reducers: {
+           addTodo: (state) => {
+               console.log("addTodo - payload: ", state.draftTodo)
+               const todos = state.todos.concat([state.draftTodo])
+               return {
+                   draftTodo: '',
+                   todos
+               }
+           },
+           setDraftTodo: (state,payload) =>  {
+               console.log("setDraftTodo - payload: ", payload)
+               return {
+                   ...state,
+                   draftTodo: payload,
+               }
+           },
+           removeTodo: (state,payload) => {
+               console.log("removeTodo - payload: ", payload)
+               const todos = state.todos.filter((todo,index) => index !== payload)
+               return {
+                   ...state,
+                   todos
+               }
+           },
+           raisePriority: (state,payload) => {
+               console.log("raisePriority - payload: ", payload)
+               const todos = state.todos
+               const todo = todos[payload]
+               todos.splice(payload,1)
+               todos.splice(payload - 1,0,todo)
+               return {
+                   ...state,
+                   todos
+               }
+           }
+       }
+   })
+
+   app.mount(appMountDom)
 </script>
 
 </body>

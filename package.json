@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "examples": "npx http-server -p 8080 ./examples"
   },
   "workspaces": [
     "packages/runtime",
