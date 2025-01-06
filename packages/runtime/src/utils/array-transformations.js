@@ -12,7 +12,7 @@ export function generateTransformationsSequence(originalArr,newArr,equalityFn = 
     const wrappedOriginalArr = new TransformationOriginArrayWrapper(originalArr,equalityFn)
     let index = 0
     let infiniteLoopCounter = 0
-    while(index < newArr.length && infiniteLoopCounter < 100000) {
+    while(index < newArr.length && infiniteLoopCounter < 1000000) {
         infiniteLoopCounter++
         if(wrappedOriginalArr.isRemovalOperation(newArr,index)) {
             transformationSequence.push(wrappedOriginalArr.removeItem(index))

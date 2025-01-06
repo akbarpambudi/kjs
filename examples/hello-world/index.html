@@ -14,6 +14,23 @@
    import {createApp,h,hText} from './k.js';
 
    const appMountDom = document.getElementById('app');
+   function TodoList(state,emit){
+         return h('ul',null,state.todos.map(
+              (todo,index) => h("li",null, [
+                hText(todo),
+                h('button', {
+                     id: `remove-${index}`,
+                     on: {
+                          'click': () => emit('removeTodo',index)
+                     }
+                },[hText('remove')])
+              ])
+         ))
+   }
+   function TodoBlank(state,emit){
+       return h('h1',null,[hText('No todos')])
+   }
+
    function TodoApp(state,emit){
        return h('div', {}, [
            h('input',{
@@ -30,40 +47,23 @@
                    'click': () => emit('addTodo')
                }
            }, [hText('add')]),
-           h('div',null,[
-               h('ul',null,state.todos.map(
-                   (todo,index) => h("li",null, [
-                       h('div',null,[
-                           hText(todo),
-                           h('button', {
-                               id: `up-${index}`,
-                               on: {
-                                   'click': () => emit('raisePriority',index)
-                               }
-                           },[hText('up')]),
-                           h('button', {
-                               id: `remove-${index}`,
-                               on: {
-                                   'click': () => emit('removeTodo',index)
-                               }
-                           },[hText('remove')])
-                       ])
-                   ])
-               ))
-           ])
+           (state.todos && state.todos.length > 0 ? TodoList(state,emit) : TodoBlank(state,emit))
        ])
    }
+
 
    const app = createApp({
        view: TodoApp,
        initialState: {
            draftTodo: '',
-           todos: []
+           todos: [],
+           showList: true
        },
        reducers: {
            addTodo: (state) => {
                const todos = state.todos.concat([state.draftTodo])
                return {
+                   ...state,
                    draftTodo: '',
                    todos
                }

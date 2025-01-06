@@ -1,5 +1,4 @@
 export function objectsDiff(obj1, obj2) {
-
     const added = []
     const removed = []
     const updated = []
@@ -48,6 +47,7 @@ export function arraysDiff(arr1, arr2) {
     }
 
     const keysSet = new Set(Object.keys(arrMap))
+
     for (const key of keysSet) {
         const freq1 = countFreqArr1[key] || 0
         const freq2 = countFreqArr2[key] || 0
@@ -66,7 +66,7 @@ export function arraysDiff(arr1, arr2) {
             }
         }
     }
+
     return {removed, added}
 }
-
 

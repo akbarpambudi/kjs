@@ -189,12 +189,12 @@ function patchChildren(originVdom,patchVdom){
     }
 }
 
-function moveChildren(originChildren,patchChildren,parentEl,originalIndex,index){
-    const el = originChildren[originalIndex].el
-    const elAtTargetIndex = parentEl.childNodes[index]
+function moveChildren(originChildren,patchChildren,parentEl,from,to){
+    const el = originChildren[from].el
+    const elAtTargetIndex = parentEl.childNodes[to]
 
     parentEl.insertBefore(el,elAtTargetIndex)
-    patchDom(originChildren[originalIndex],patchChildren[index],parentEl)
+    patchDom(originChildren[from],patchChildren[to],parentEl)
 }
 
 function toClassList(classes){
